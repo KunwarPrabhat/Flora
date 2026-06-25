@@ -1,12 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useUser } from '@/context/UserContext';
-import { Colors } from '@/constants/theme';
 
 export default function MemoriesScreen() {
-  const { entries } = useUser();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
+  const { entries, theme } = useUser();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

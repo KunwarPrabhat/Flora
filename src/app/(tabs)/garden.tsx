@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useUser } from '@/context/UserContext';
-import { Colors } from '@/constants/theme';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence, Easing, withDelay } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence, Easing } from 'react-native-reanimated';
 import { useEffect } from 'react';
 
-const GrowthStage = ({ level }: { level: number }) => {
+const GrowthStage = ({ level, secondaryColor }: { level: number; secondaryColor: string }) => {
   let icon = '🌱'; // Seed
   let label = 'A tiny seed of thought';
   
@@ -40,16 +39,13 @@ const GrowthStage = ({ level }: { level: number }) => {
   return (
     <View style={styles.growthContainer}>
       <Animated.Text style={[styles.growthIcon, animatedStyle]}>{icon}</Animated.Text>
-      <Text style={[styles.growthLabel, { color: '#A28C8C' }]}>{label}</Text>
+      <Text style={[styles.growthLabel, { color: secondaryColor }]}>{label}</Text>
     </View>
   );
 }
 
 export default function GardenScreen() {
-  const { entries, name } = useUser();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
-  
+  const { entries, name, theme } = useUser();
   const entriesCount = entries.length;
 
   return (
@@ -67,7 +63,7 @@ export default function GardenScreen() {
           <Text style={styles.cloud2}>☁️</Text>
         </View>
         
-        <GrowthStage level={entriesCount} />
+        <GrowthStage level={entriesCount} secondaryColor={theme.textSecondary} />
         
         <View style={[styles.ground, { backgroundColor: theme.success }]} />
       </View>
@@ -80,7 +76,9 @@ export default function GardenScreen() {
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Memories</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={[styles.statValue, { color: theme.primary }]}>{entriesCount >= 50 ? 'Max' : (entriesCount >= 15 ? 50 - entriesCount : (entriesCount >= 5 ? 15 - entriesCount : 5 - entriesCount))}</Text>
+            <Text style={[styles.statValue, { color: theme.primary }]}>
+              {entriesCount >= 50 ? 'Max' : (entriesCount >= 15 ? 50 - entriesCount : (entriesCount >= 5 ? 15 - entriesCount : 5 - entriesCount))}
+            </Text>
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>To Next Stage</Text>
           </View>
         </View>
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sky: {
-    ...StyleSheet.absoluteFillObject,
+    ...(StyleSheet.absoluteFill as object),
   },
   cloud1: {
     position: 'absolute',

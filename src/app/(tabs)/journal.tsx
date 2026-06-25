@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useUser } from '@/context/UserContext';
-import { Colors } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import MoodIcon from '@/components/mood-icon';
 
 export default function JournalScreen() {
-  const { entries } = useUser();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
+  const { entries, theme } = useUser();
   const router = useRouter();
 
   return (
@@ -29,22 +27,44 @@ export default function JournalScreen() {
           </View>
         }
         renderItem={({ item }) => (
-          <View style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
+          <View style={[
+            styles.card, 
+            { 
+              backgroundColor: item.backgroundColor || theme.backgroundElement,
+              borderColor: theme.backgroundSelected,
+              borderWidth: 1 
+            }
+          ]}>
             <View style={styles.cardHeader}>
               <Text style={[styles.cardDate, { color: theme.textSecondary }]}>{item.date}</Text>
               {item.mood && (
-                <Text style={styles.cardMood}>
-                  {item.mood === 'happy' ? '🥰' : 
-                   item.mood === 'sad' ? '🌧' : 
-                   item.mood === 'calm' ? '😌' : '✨'}
-                </Text>
+                <MoodIcon mood={item.mood} size={28} />
               )}
             </View>
-            <Text style={[styles.cardContent, { color: theme.text }]}>{item.content}</Text>
+            
+            {/* Display Photos if any */}
+            {item.photos && item.photos.length > 0 && (
+              <View style={styles.photoGrid}>
+                {item.photos.map((photoUri, index) => (
+                  <Image key={index} source={{ uri: photoUri }} style={styles.photo} />
+                ))}
+              </View>
+            )}
+
+            <Text style={[
+              styles.cardContent, 
+              { 
+                color: theme.text,
+                fontFamily: item.fontFamily === 'System' ? undefined : item.fontFamily || 'Quicksand_500Medium'
+              }
+            ]}>
+              {item.content}
+            </Text>
+
             {item.tags && item.tags.length > 0 && (
               <View style={styles.tagsContainer}>
                 {item.tags.map((tag, idx) => (
-                  <View key={idx} style={[styles.tag, { backgroundColor: theme.accent2 }]}>
+                  <View key={idx} style={[styles.tag, { backgroundColor: theme.primary }]}>
                     <Text style={styles.tagText}>#{tag}</Text>
                   </View>
                 ))}
@@ -112,9 +132,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   cardContent: {
-    fontFamily: 'Quicksand_500Medium',
     fontSize: 16,
     lineHeight: 24,
+  },
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
+  },
+  photo: {
+    width: '100%',
+    height: 150,
+    borderRadius: 16,
   },
   tagsContainer: {
     flexDirection: 'row',

@@ -13,7 +13,11 @@ import Animated, {
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from 'react-native';
 
-const FloatingElement = ({ children, delay, duration }: { children: React.ReactNode, delay: number, duration: number }) => {
+import WelcomeFlower from '../../assets/images/onboarding/welcome_flower.svg';
+import Sparkles from '../../assets/images/onboarding/sparkles.svg';
+import CloudPastel from '../../assets/images/onboarding/cloud_pastel.svg';
+
+const FloatingElement = ({ children, delay, duration, style }: { children: React.ReactNode, delay: number, duration: number, style?: any }) => {
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -21,11 +25,11 @@ const FloatingElement = ({ children, delay, duration }: { children: React.ReactN
       delay,
       withRepeat(
         withSequence(
-          withTiming(-10, { duration, easing: Easing.inOut(Easing.ease) }),
-          withTiming(10, { duration, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-15, { duration, easing: Easing.inOut(Easing.ease) }),
+          withTiming(15, { duration, easing: Easing.inOut(Easing.ease) }),
           withTiming(0, { duration, easing: Easing.inOut(Easing.ease) })
         ),
-        -1, // Infinite repeat
+        -1,
         true
       )
     );
@@ -35,7 +39,7 @@ const FloatingElement = ({ children, delay, duration }: { children: React.ReactN
     transform: [{ translateY: translateY.value }],
   }));
 
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
+  return <Animated.View style={[animatedStyle, style]}>{children}</Animated.View>;
 };
 
 export default function WelcomeScreen() {
@@ -47,17 +51,20 @@ export default function WelcomeScreen() {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Background aesthetic elements */}
       <View style={styles.backgroundContainer}>
-        <FloatingElement delay={0} duration={3000}>
-          <Text style={styles.floatingIcon}>🌸</Text>
+        <FloatingElement delay={0} duration={3000} style={{ position: 'absolute', top: 80, left: 60 }}>
+          <WelcomeFlower width={80} height={80} />
         </FloatingElement>
-        <FloatingElement delay={1000} duration={4000}>
-          <Text style={[styles.floatingIcon, { fontSize: 40, left: 200, top: 100 }]}>✨</Text>
+        
+        <FloatingElement delay={1000} duration={4000} style={{ position: 'absolute', top: 120, right: 60 }}>
+          <Sparkles width={60} height={60} />
         </FloatingElement>
-        <FloatingElement delay={500} duration={3500}>
-          <Text style={[styles.floatingIcon, { fontSize: 35, left: 50, top: 250 }]}>☁️</Text>
+        
+        <FloatingElement delay={500} duration={3500} style={{ position: 'absolute', top: 280, left: 40 }}>
+          <CloudPastel width={90} height={60} />
         </FloatingElement>
-        <FloatingElement delay={1500} duration={4500}>
-          <Text style={[styles.floatingIcon, { fontSize: 25, left: 250, top: 300 }]}>🌸</Text>
+        
+        <FloatingElement delay={1500} duration={4500} style={{ position: 'absolute', bottom: 180, right: 80 }}>
+          <WelcomeFlower width={60} height={60} />
         </FloatingElement>
       </View>
 
@@ -87,16 +94,8 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   backgroundContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-    opacity: 0.6,
-  },
-  floatingIcon: {
-    fontSize: 50,
-    position: 'absolute',
-    top: 50,
-    left: 80,
+    ...(StyleSheet.absoluteFill as object),
+    opacity: 0.8,
   },
   content: {
     flex: 1,

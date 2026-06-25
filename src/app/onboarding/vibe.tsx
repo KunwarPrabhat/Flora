@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useColorScheme } from 'react-native';
-import { Colors } from '@/constants/theme';
+import { useUser, Vibe } from '@/context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser, Vibe, Mood } from '@/context/UserContext';
+import { Themes } from '@/constants/theme';
 
 const vibes: { id: Vibe; label: string; icon: string }[] = [
   { id: 'floral', label: 'Soft & Floral', icon: '🌷' },
@@ -15,41 +14,30 @@ const vibes: { id: Vibe; label: string; icon: string }[] = [
   { id: 'cottagecore', label: 'Cottagecore', icon: '🌿' },
 ];
 
-const moods: { id: Mood; label: string; icon: string }[] = [
-  { id: 'happy', label: 'Happy', icon: '🥰' },
-  { id: 'good', label: 'Good', icon: '😊' },
-  { id: 'calm', label: 'Calm', icon: '😌' },
-  { id: 'emotional', label: 'Emotional', icon: '🥺' },
-  { id: 'tired', label: 'Tired', icon: '😴' },
-  { id: 'sad', label: 'Sad', icon: '🌧' },
-  { id: 'excited', label: 'Excited', icon: '✨' },
-];
-
 export default function VibeScreen() {
   const [selectedVibe, setSelectedVibe] = useState<Vibe | null>(null);
-  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const router = useRouter();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
-  const { completeOnboarding, setTodayMood } = useUser();
+  const { completeOnboarding, theme: defaultTheme } = useUser();
+
+  // If vibe is selected, use its theme colors; otherwise, use default theme colors
+  const activeTheme = selectedVibe ? Themes[selectedVibe] : defaultTheme;
 
   const handleFinish = async () => {
-    if (selectedVibe && selectedMood) {
+    if (selectedVibe) {
       const name = await AsyncStorage.getItem('@temp_name') || 'Dreamer';
       const age = await AsyncStorage.getItem('@temp_age') || '18';
       
-      await setTodayMood(selectedMood);
       await completeOnboarding({ name, age, vibe: selectedVibe });
-      
-      // The _layout will automatically redirect to /(tabs) when isOnboardingComplete is true
       router.replace('/(tabs)');
     }
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: activeTheme.background }]}>
       <View style={styles.content}>
-        <Text style={[styles.title, { color: theme.text, marginTop: 40 }]}>What kind of little world do you want? 🌸</Text>
+        <Text style={[styles.title, { color: activeTheme.text, marginTop: 60 }]}>
+          What kind of little world do you want? 🌸
+        </Text>
         
         <View style={styles.grid}>
           {vibes.map((vibe) => (
@@ -58,49 +46,27 @@ export default function VibeScreen() {
               style={[
                 styles.card,
                 { 
-                  backgroundColor: selectedVibe === vibe.id ? theme.primary : theme.backgroundElement,
-                  borderColor: selectedVibe === vibe.id ? theme.primary : 'transparent',
+                  backgroundColor: selectedVibe === vibe.id ? activeTheme.primary : activeTheme.backgroundElement,
+                  borderColor: selectedVibe === vibe.id ? activeTheme.primary : 'transparent',
                 }
               ]}
               onPress={() => setSelectedVibe(vibe.id)}
             >
               <Text style={styles.cardIcon}>{vibe.icon}</Text>
-              <Text style={[styles.cardLabel, { color: selectedVibe === vibe.id ? '#fff' : theme.textSecondary }]}>
+              <Text style={[styles.cardLabel, { color: selectedVibe === vibe.id ? '#fff' : activeTheme.textSecondary }]}>
                 {vibe.label}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={[styles.title, { color: theme.text, marginTop: 40 }]}>How are you feeling today?</Text>
-        
-        <View style={styles.grid}>
-          {moods.map((mood) => (
-            <TouchableOpacity
-              key={mood.id}
-              style={[
-                styles.moodCard,
-                { 
-                  backgroundColor: selectedMood === mood.id ? theme.accent : theme.backgroundElement,
-                }
-              ]}
-              onPress={() => setSelectedMood(mood.id)}
-            >
-              <Text style={styles.cardIcon}>{mood.icon}</Text>
-              <Text style={[styles.cardLabel, { color: selectedMood === mood.id ? '#fff' : theme.textSecondary }]}>
-                {mood.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {selectedVibe && selectedMood && (
+        {selectedVibe && (
           <View style={styles.readyContainer}>
-            <Text style={[styles.readyText, { color: theme.primary }]}>
+            <Text style={[styles.readyText, { color: activeTheme.primary }]}>
               Your journal is ready 💕{'\n'}Let's fill these pages with your little moments.
             </Text>
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: theme.primary }]}
+              style={[styles.button, { backgroundColor: activeTheme.primary }]}
               onPress={handleFinish}
             >
               <Text style={styles.buttonText}>Enter my journal 🌸</Text>
@@ -125,7 +91,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DancingScript_700Bold',
     fontSize: 28,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   grid: {
     flexDirection: 'row',
@@ -136,18 +102,12 @@ const styles = StyleSheet.create({
   card: {
     width: '45%',
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 24,
     alignItems: 'center',
     borderWidth: 2,
   },
-  moodCard: {
-    width: '28%',
-    padding: 15,
-    borderRadius: 20,
-    alignItems: 'center',
-  },
   cardIcon: {
-    fontSize: 32,
+    fontSize: 36,
     marginBottom: 10,
   },
   cardLabel: {
@@ -156,7 +116,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   readyContainer: {
-    marginTop: 40,
+    marginTop: 50,
     alignItems: 'center',
   },
   readyText: {

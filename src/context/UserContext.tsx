@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Themes, ThemeColors, VibeType } from '@/constants/theme';
 
-export type Mood = 'happy' | 'good' | 'calm' | 'emotional' | 'tired' | 'sad' | 'excited';
-export type Vibe = 'floral' | 'cafe' | 'moonlight' | 'fairy' | 'pastel' | 'cottagecore';
+export type Mood = 'happy' | 'good' | 'calm' | 'emotional' | 'loved' | 'sad' | 'crying';
+export type Vibe = VibeType;
 
 export interface JournalEntry {
   id: string;
@@ -12,6 +13,8 @@ export interface JournalEntry {
   tags?: string[];
   photos?: string[];
   stickers?: string[];
+  fontFamily?: string;
+  backgroundColor?: string;
 }
 
 interface UserState {
@@ -21,13 +24,19 @@ interface UserState {
   vibe: Vibe | null;
   entries: JournalEntry[];
   todayMood: Mood | null;
+  lockEnabled: boolean;
+  remindersEnabled: boolean;
 }
 
 interface UserContextType extends UserState {
   completeOnboarding: (data: { name: string; age: string; vibe: Vibe }) => Promise<void>;
   addEntry: (entry: JournalEntry) => Promise<void>;
   setTodayMood: (mood: Mood) => Promise<void>;
+  setVibe: (vibe: Vibe) => Promise<void>;
+  setLockEnabled: (enabled: boolean) => Promise<void>;
+  setRemindersEnabled: (enabled: boolean) => Promise<void>;
   resetApp: () => Promise<void>;
+  theme: ThemeColors;
 }
 
 const defaultState: UserState = {
@@ -37,11 +46,13 @@ const defaultState: UserState = {
   vibe: null,
   entries: [],
   todayMood: null,
+  lockEnabled: false,
+  remindersEnabled: false,
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const STORAGE_KEY = '@bloom_user_data';
+const STORAGE_KEY = '@bloom_user_data_v2';
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<UserState>(defaultState);
@@ -100,17 +111,57 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     await saveData(newState);
   };
 
+  const setVibe = async (vibe: Vibe) => {
+    const newState = {
+      ...state,
+      vibe,
+    };
+    setState(newState);
+    await saveData(newState);
+  };
+
+  const setLockEnabled = async (enabled: boolean) => {
+    const newState = {
+      ...state,
+      lockEnabled: enabled,
+    };
+    setState(newState);
+    await saveData(newState);
+  };
+
+  const setRemindersEnabled = async (enabled: boolean) => {
+    const newState = {
+      ...state,
+      remindersEnabled: enabled,
+    };
+    setState(newState);
+    await saveData(newState);
+  };
+
   const resetApp = async () => {
     setState(defaultState);
     await AsyncStorage.removeItem(STORAGE_KEY);
   };
 
   if (!isLoaded) {
-    return null; // Or a splash screen
+    return null;
   }
 
+  // Dynamically resolve theme based on vibe selection
+  const activeTheme = Themes[state.vibe || 'floral'];
+
   return (
-    <UserContext.Provider value={{ ...state, completeOnboarding, addEntry, setTodayMood, resetApp }}>
+    <UserContext.Provider value={{ 
+      ...state, 
+      completeOnboarding, 
+      addEntry, 
+      setTodayMood, 
+      setVibe, 
+      setLockEnabled, 
+      setRemindersEnabled, 
+      resetApp,
+      theme: activeTheme
+    }}>
       {children}
     </UserContext.Provider>
   );

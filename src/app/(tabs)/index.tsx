@@ -1,30 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useUser } from '@/context/UserContext';
-import { Colors } from '@/constants/theme';
 import { format } from 'date-fns';
+import MoodIcon from '@/components/mood-icon';
 
 export default function HomeScreen() {
-  const { name, todayMood, entries } = useUser();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
+  const { name, todayMood, entries, theme } = useUser();
 
   const greetingTime = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening';
   const currentDate = format(new Date(), 'EEEE, MMMM do');
   const streak = Math.min(entries.length, 5); // simplified streak logic
-
-  const getMoodIcon = (moodId: string | null) => {
-    switch (moodId) {
-      case 'happy': return '🥰';
-      case 'good': return '😊';
-      case 'calm': return '😌';
-      case 'emotional': return '🥺';
-      case 'tired': return '😴';
-      case 'sad': return '🌧';
-      case 'excited': return '✨';
-      default: return '🌸';
-    }
-  };
 
   const getMoodLabel = (moodId: string | null) => {
     switch (moodId) {
@@ -32,9 +17,9 @@ export default function HomeScreen() {
       case 'good': return 'Good';
       case 'calm': return 'Calm';
       case 'emotional': return 'Emotional';
-      case 'tired': return 'Tired';
+      case 'loved': return 'Loved';
       case 'sad': return 'Sad';
-      case 'excited': return 'Excited';
+      case 'crying': return 'Crying';
       default: return 'Feeling okay';
     }
   };
@@ -51,8 +36,8 @@ export default function HomeScreen() {
           <TouchableOpacity style={[styles.card, { backgroundColor: theme.backgroundElement, flex: 1, marginRight: 10 }]}>
             <Text style={[styles.cardTitle, { color: theme.textSecondary }]}>Today's mood</Text>
             <View style={styles.moodContent}>
-              <Text style={styles.moodIcon}>{getMoodIcon(todayMood)}</Text>
-              <Text style={[styles.moodText, { color: theme.primary }]}>{getMoodLabel(todayMood)}</Text>
+              <MoodIcon mood={todayMood} size={40} />
+              <Text style={[styles.moodText, { color: theme.primary, marginTop: 5 }]}>{getMoodLabel(todayMood)}</Text>
             </View>
           </TouchableOpacity>
 
@@ -65,7 +50,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={[styles.quoteCard, { backgroundColor: theme.accent2 }]}>
+        <TouchableOpacity style={[styles.quoteCard, { backgroundColor: theme.primary }]}>
           <Text style={styles.quoteTitle}>Daily Quote</Text>
           <Text style={styles.quoteText}>"Small moments become beautiful memories."</Text>
         </TouchableOpacity>
