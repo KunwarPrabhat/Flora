@@ -9,18 +9,26 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    text: '#5B4B49', // Soft dark brown/grey
+    background: '#FFF5F5', // Very light pastel pink
+    backgroundElement: '#FFE3E3', // Deeper pink for elements
+    backgroundSelected: '#FFD1D1',
+    textSecondary: '#A28C8C',
+    primary: '#FFA6A6', // Coral/pink primary
+    accent: '#BDE0FE', // Pastel blue
+    accent2: '#CDB4DB', // Pastel purple
+    success: '#D8F3DC', // Pastel green
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text: '#FFF5F5',
+    background: '#2B2121', // Dark warm brown/grey
+    backgroundElement: '#403333',
+    backgroundSelected: '#544646',
+    textSecondary: '#C5B5B5',
+    primary: '#FFA6A6',
+    accent: '#BDE0FE',
+    accent2: '#CDB4DB',
+    success: '#D8F3DC',
   },
 } as const;
 
