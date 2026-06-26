@@ -8,7 +8,7 @@ export default function MemoriesScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>Timeline ✨</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Timeline</Text>
       </View>
 
       <FlatList
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 36,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 32,
   },
   timeline: {
     padding: 20,

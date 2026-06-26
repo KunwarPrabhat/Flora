@@ -5,10 +5,13 @@ import { View } from 'react-native';
 import TabHome from '../../assets/images/tabs/tab_home.svg';
 import TabJournal from '../../assets/images/tabs/tab_journal.svg';
 import TabMemories from '../../assets/images/tabs/tab_memories.svg';
-import TabProfile from '../../assets/images/tabs/tab_profile_women.svg';
+import TabProfileWomen from '../../assets/images/tabs/tab_profile_women.svg';
+import TabProfileMen from '../../assets/images/tabs/tab_profile_men.svg';
 
 export default function TabLayout() {
-  const { theme } = useUser();
+  const { theme, gender } = useUser();
+  
+  const ProfileIcon = gender === 'male' ? TabProfileMen : TabProfileWomen;
 
   return (
     <Tabs
@@ -33,7 +36,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ focused }) => (
-            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.1 : 1 }] }}>
+            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.25 : 1 }] }}>
               <TabHome width={28} height={28} />
             </View>
           ),
@@ -44,7 +47,7 @@ export default function TabLayout() {
         options={{
           title: 'Journal',
           tabBarIcon: ({ focused }) => (
-            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.1 : 1 }] }}>
+            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.25 : 1 }] }}>
               <TabJournal width={28} height={28} />
             </View>
           ),
@@ -61,7 +64,7 @@ export default function TabLayout() {
         options={{
           title: 'Memories',
           tabBarIcon: ({ focused }) => (
-            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.1 : 1 }] }}>
+            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.25 : 1 }] }}>
               <TabMemories width={28} height={28} />
             </View>
           ),
@@ -72,8 +75,8 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
-            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.1 : 1 }] }}>
-              <TabProfile width={28} height={28} />
+            <View style={{ opacity: focused ? 1 : 0.5, transform: [{ scale: focused ? 1.25 : 1 }] }}>
+              <ProfileIcon width={28} height={28} />
             </View>
           ),
         }}

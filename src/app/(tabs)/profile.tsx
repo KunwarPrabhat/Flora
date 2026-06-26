@@ -1,23 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch, Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch, Modal, FlatList, ImageBackground } from 'react-native';
 import { useUser, Vibe } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Themes } from '@/constants/theme';
 
-const vibeOptions: { id: Vibe; label: string; icon: string }[] = [
-  { id: 'floral', label: 'Soft & Floral', icon: '🌷' },
-  { id: 'cafe', label: 'Cozy Cafe', icon: '☕' },
-  { id: 'moonlight', label: 'Moonlight Dreams', icon: '🌙' },
-  { id: 'fairy', label: 'Fairy Garden', icon: '🦋' },
-  { id: 'pastel', label: 'Cute Pastel', icon: '🎀' },
-  { id: 'cottagecore', label: 'Cottagecore', icon: '🌿' },
+import TabProfileWomen from '../../assets/images/tabs/tab_profile_women.svg';
+import TabProfileMen from '../../assets/images/tabs/tab_profile_men.svg';
+
+const vibeImages = {
+  floral: require('../../assets/images/worlds/soft.jpg'),
+  cafe: require('../../assets/images/worlds/cozy.jpg'),
+  moonlight: require('../../assets/images/worlds/moonlight.jpg'),
+  fairy: require('../../assets/images/worlds/garden.jpg'),
+  pastel: require('../../assets/images/worlds/pastel.jpg'),
+  cottagecore: require('../../assets/images/worlds/cottage.jpg'),
+};
+
+const vibeOptions: { id: Vibe; label: string }[] = [
+  { id: 'floral', label: 'Soft & Floral' },
+  { id: 'cafe', label: 'Cozy Cafe' },
+  { id: 'moonlight', label: 'Moonlight Dreams' },
+  { id: 'fairy', label: 'Fairy Garden' },
+  { id: 'pastel', label: 'Cute Pastel' },
+  { id: 'cottagecore', label: 'Cottagecore' },
 ];
 
 export default function ProfileScreen() {
   const { 
     name, 
     age, 
+    gender,
     vibe, 
     lockEnabled, 
     remindersEnabled, 
@@ -38,19 +51,23 @@ export default function ProfileScreen() {
 
   const getVibeName = (vibeId: Vibe | null) => {
     const found = vibeOptions.find(o => o.id === vibeId);
-    return found ? `${found.label} ${found.icon}` : 'Default 🌸';
+    return found ? found.label : 'Default';
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>My World 🎀</Text>
+        <Text style={[styles.title, { color: theme.text }]}>My World</Text>
       </View>
 
       <View style={styles.content}>
         <View style={[styles.profileCard, { backgroundColor: theme.backgroundElement }]}>
-          <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
-            <Text style={styles.avatarText}>{name ? name[0].toUpperCase() : '?'}</Text>
+          <View style={styles.avatarCircleLarge}>
+            {gender === 'male' ? (
+              <TabProfileMen width={90} height={90} />
+            ) : (
+              <TabProfileWomen width={90} height={90} />
+            )}
           </View>
           <Text style={[styles.name, { color: theme.text }]}>{name}</Text>
           <Text style={[styles.details, { color: theme.textSecondary }]}>
@@ -119,7 +136,7 @@ export default function ProfileScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.background }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.text }]}>Select Vibe 🌸</Text>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Select Vibe</Text>
               <TouchableOpacity onPress={() => setThemeModalVisible(false)}>
                 <Ionicons name="close" size={28} color={theme.text} />
               </TouchableOpacity>
@@ -131,10 +148,10 @@ export default function ProfileScreen() {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
-                    styles.vibeSelectItem,
+                    styles.vibeSelectCard,
                     { 
-                      backgroundColor: vibe === item.id ? theme.backgroundElement : 'transparent',
-                      borderRadius: 16
+                      borderColor: vibe === item.id ? theme.primary : 'transparent',
+                      borderWidth: vibe === item.id ? 3 : 0,
                     }
                   ]}
                   onPress={async () => {
@@ -142,12 +159,17 @@ export default function ProfileScreen() {
                     setThemeModalVisible(false);
                   }}
                 >
-                  <Text style={styles.vibeSelectIcon}>{item.icon}</Text>
-                  <Text style={[styles.vibeSelectLabel, { color: theme.text }]}>
+                  <ImageBackground
+                    source={vibeImages[item.id]}
+                    style={StyleSheet.absoluteFill}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.vibeSelectOverlay} />
+                  <Text style={styles.vibeSelectText}>
                     {item.label}
                   </Text>
                   {vibe === item.id && (
-                    <Ionicons name="checkmark-circle" size={24} color={theme.primary} style={styles.checkIcon} />
+                    <Ionicons name="checkmark-circle" size={24} color="#fff" style={styles.checkIcon} />
                   )}
                 </TouchableOpacity>
               )}
@@ -168,8 +190,8 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 36,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 32,
   },
   content: {
     padding: 20,
@@ -180,18 +202,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  avatar: {
+  avatarCircleLarge: {
     width: 100,
     height: 100,
     borderRadius: 50,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
     marginBottom: 15,
-  },
-  avatarText: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 40,
-    color: '#fff',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   name: {
     fontFamily: 'Quicksand_700Bold',
@@ -267,25 +291,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitle: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 28,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 24,
   },
-  vibeSelectItem: {
+  vibeSelectCard: {
+    height: 70,
+    borderRadius: 16,
+    marginBottom: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
-    marginBottom: 5,
   },
-  vibeSelectIcon: {
-    fontSize: 28,
-    marginRight: 15,
+  vibeSelectOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
-  vibeSelectLabel: {
+  vibeSelectText: {
     fontFamily: 'Quicksand_700Bold',
     fontSize: 16,
+    color: '#fff',
     flex: 1,
+    zIndex: 1,
   },
   checkIcon: {
-    marginLeft: 10,
+    zIndex: 1,
   },
 });

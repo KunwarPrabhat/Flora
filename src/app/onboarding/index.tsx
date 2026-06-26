@@ -10,12 +10,11 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from 'react-native';
+import { Themes } from '@/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 import WelcomeFlower from '../../assets/images/onboarding/welcome_flower.svg';
 import Sparkles from '../../assets/images/onboarding/sparkles.svg';
-import CloudPastel from '../../assets/images/onboarding/cloud_pastel.svg';
 
 const FloatingElement = ({ children, delay, duration, style }: { children: React.ReactNode, delay: number, duration: number, style?: any }) => {
   const translateY = useSharedValue(0);
@@ -25,8 +24,8 @@ const FloatingElement = ({ children, delay, duration, style }: { children: React
       delay,
       withRepeat(
         withSequence(
-          withTiming(-15, { duration, easing: Easing.inOut(Easing.ease) }),
-          withTiming(15, { duration, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-12, { duration, easing: Easing.inOut(Easing.ease) }),
+          withTiming(12, { duration, easing: Easing.inOut(Easing.ease) }),
           withTiming(0, { duration, easing: Easing.inOut(Easing.ease) })
         ),
         -1,
@@ -44,32 +43,53 @@ const FloatingElement = ({ children, delay, duration, style }: { children: React
 
 export default function WelcomeScreen() {
   const router = useRouter();
-  const scheme = useColorScheme();
-  const theme = Colors[scheme === 'dark' ? 'dark' : 'light'];
+  const theme = Themes.floral; // Always use cozy soft pink/white theme for welcoming onboarding
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Background aesthetic elements */}
       <View style={styles.backgroundContainer}>
-        <FloatingElement delay={0} duration={3000} style={{ position: 'absolute', top: 80, left: 60 }}>
-          <WelcomeFlower width={80} height={80} />
+        {/* Soft pink floating flowers */}
+        <FloatingElement delay={0} duration={3200} style={{ position: 'absolute', top: 90, left: 50 }}>
+          <WelcomeFlower width={50} height={50} fill="#FFA6A6" />
         </FloatingElement>
         
-        <FloatingElement delay={1000} duration={4000} style={{ position: 'absolute', top: 120, right: 60 }}>
-          <Sparkles width={60} height={60} />
+        <FloatingElement delay={800} duration={3800} style={{ position: 'absolute', top: 220, right: 40 }}>
+          <WelcomeFlower width={45} height={45} fill="#FFB7B2" />
+        </FloatingElement>
+
+        <FloatingElement delay={1600} duration={4200} style={{ position: 'absolute', bottom: 220, left: 45 }}>
+          <WelcomeFlower width={40} height={40} fill="#FFC0CB" />
+        </FloatingElement>
+
+        <FloatingElement delay={1200} duration={3500} style={{ position: 'absolute', bottom: 140, right: 60 }}>
+          <WelcomeFlower width={35} height={35} fill="#FFA6A6" />
+        </FloatingElement>
+
+        <FloatingElement delay={400} duration={4000} style={{ position: 'absolute', top: 380, right: 100 }}>
+          <WelcomeFlower width={30} height={30} fill="#FFB7B2" />
         </FloatingElement>
         
-        <FloatingElement delay={500} duration={3500} style={{ position: 'absolute', top: 280, left: 40 }}>
-          <CloudPastel width={90} height={60} />
+        {/* White glowing sparkles */}
+        <FloatingElement delay={1000} duration={4000} style={{ position: 'absolute', top: 120, right: 80 }}>
+          <Sparkles width={18} height={18} />
         </FloatingElement>
-        
-        <FloatingElement delay={1500} duration={4500} style={{ position: 'absolute', bottom: 180, right: 80 }}>
-          <WelcomeFlower width={60} height={60} />
+
+        <FloatingElement delay={500} duration={3400} style={{ position: 'absolute', top: 270, left: 90 }}>
+          <Sparkles width={14} height={14} />
+        </FloatingElement>
+
+        <FloatingElement delay={1800} duration={4500} style={{ position: 'absolute', bottom: 290, right: 110 }}>
+          <Sparkles width={16} height={16} />
+        </FloatingElement>
+
+        <FloatingElement delay={1300} duration={3700} style={{ position: 'absolute', bottom: 100, left: 120 }}>
+          <Sparkles width={15} height={15} />
         </FloatingElement>
       </View>
 
       <View style={styles.content}>
-        <Text style={[styles.title, { color: theme.text }]}>Hi there, little dreamer 🌸</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Hi there, little dreamer</Text>
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           Welcome to your tiny corner of the world.{'\n'}
           A place where your thoughts, feelings, and memories can bloom.
@@ -80,7 +100,10 @@ export default function WelcomeScreen() {
         style={[styles.button, { backgroundColor: theme.primary }]}
         onPress={() => router.push('/onboarding/name')}
       >
-        <Text style={styles.buttonText}>Start my journey ✨</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Text style={styles.buttonText}>Start my journey</Text>
+          <Ionicons name="sparkles" size={18} color="#fff" />
+        </View>
       </TouchableOpacity>
     </View>
   );

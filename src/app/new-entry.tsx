@@ -73,7 +73,7 @@ export default function NewEntryScreen() {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (permissionResult.granted === false) {
-      alert("Permission to access gallery is required to add photos! 🌸");
+      alert("Permission to access gallery is required to add photos!");
       return;
     }
 
@@ -108,7 +108,7 @@ export default function NewEntryScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
           <Ionicons name="close" size={28} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>New Memory ✨</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>New Memory</Text>
         <TouchableOpacity onPress={handleSave} style={styles.headerBtn} disabled={!content.trim()}>
           <Text style={[styles.saveText, { color: content.trim() ? theme.primary : theme.textSecondary }]}>Save</Text>
         </TouchableOpacity>
@@ -171,7 +171,7 @@ export default function NewEntryScreen() {
               fontFamily: selectedFont === 'System' ? undefined : selectedFont
             }
           ]}
-          placeholder="Dear Diary 💕..."
+          placeholder="Dear Diary..."
           placeholderTextColor={theme.textSecondary}
           multiline
           value={content}
@@ -201,7 +201,7 @@ export default function NewEntryScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.background }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.text }]}>Choose Font Style 📝</Text>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Choose Font Style</Text>
               <TouchableOpacity onPress={() => setFontModalVisible(false)}>
                 <Ionicons name="close" size={28} color={theme.text} />
               </TouchableOpacity>
@@ -232,7 +232,7 @@ export default function NewEntryScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.background }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.text }]}>Choose Card Color 🎨</Text>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Choose Card Color</Text>
               <TouchableOpacity onPress={() => setColorModalVisible(false)}>
                 <Ionicons name="close" size={28} color={theme.text} />
               </TouchableOpacity>
@@ -267,7 +267,7 @@ export default function NewEntryScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.background }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.text }]}>Add Tags 🏷</Text>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Add Tags</Text>
               <TouchableOpacity onPress={() => setTagModalVisible(false)}>
                 <Ionicons name="close" size={28} color={theme.text} />
               </TouchableOpacity>
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerTitle: {
-    fontFamily: 'DancingScript_700Bold',
+    fontFamily: 'Quicksand_700Bold',
     fontSize: 24,
   },
   saveText: {
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitle: {
-    fontFamily: 'DancingScript_700Bold',
+    fontFamily: 'Quicksand_700Bold',
     fontSize: 24,
   },
   selectItem: {

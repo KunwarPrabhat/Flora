@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUser, Vibe } from '@/context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Themes } from '@/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
 
-const vibes: { id: Vibe; label: string; icon: string }[] = [
-  { id: 'floral', label: 'Soft & Floral', icon: '🌷' },
-  { id: 'cafe', label: 'Cozy Cafe', icon: '☕' },
-  { id: 'moonlight', label: 'Moonlight Dreams', icon: '🌙' },
-  { id: 'fairy', label: 'Fairy Garden', icon: '🦋' },
-  { id: 'pastel', label: 'Cute Pastel', icon: '🎀' },
-  { id: 'cottagecore', label: 'Cottagecore', icon: '🌿' },
+const vibeImages = {
+  floral: require('../../assets/images/worlds/soft.jpg'),
+  cafe: require('../../assets/images/worlds/cozy.jpg'),
+  moonlight: require('../../assets/images/worlds/moonlight.jpg'),
+  fairy: require('../../assets/images/worlds/garden.jpg'),
+  pastel: require('../../assets/images/worlds/pastel.jpg'),
+  cottagecore: require('../../assets/images/worlds/cottage.jpg'),
+};
+
+const vibes: { id: Vibe; label: string }[] = [
+  { id: 'floral', label: 'Soft & Floral' },
+  { id: 'cafe', label: 'Cozy Cafe' },
+  { id: 'moonlight', label: 'Moonlight Dreams' },
+  { id: 'fairy', label: 'Fairy Garden' },
+  { id: 'pastel', label: 'Cute Pastel' },
+  { id: 'cottagecore', label: 'Cottagecore' },
 ];
 
 export default function VibeScreen() {
@@ -26,8 +36,9 @@ export default function VibeScreen() {
     if (selectedVibe) {
       const name = await AsyncStorage.getItem('@temp_name') || 'Dreamer';
       const age = await AsyncStorage.getItem('@temp_age') || '18';
+      const gender = (await AsyncStorage.getItem('@temp_gender') || 'female') as any;
       
-      await completeOnboarding({ name, age, vibe: selectedVibe });
+      await completeOnboarding({ name, age, vibe: selectedVibe, gender });
       router.replace('/(tabs)');
     }
   };
@@ -36,7 +47,7 @@ export default function VibeScreen() {
     <ScrollView style={[styles.container, { backgroundColor: activeTheme.background }]}>
       <View style={styles.content}>
         <Text style={[styles.title, { color: activeTheme.text, marginTop: 60 }]}>
-          What kind of little world do you want? 🌸
+          What kind of little world do you want?
         </Text>
         
         <View style={styles.grid}>
@@ -46,14 +57,22 @@ export default function VibeScreen() {
               style={[
                 styles.card,
                 { 
-                  backgroundColor: selectedVibe === vibe.id ? activeTheme.primary : activeTheme.backgroundElement,
                   borderColor: selectedVibe === vibe.id ? activeTheme.primary : 'transparent',
+                  borderWidth: selectedVibe === vibe.id ? 3 : 0,
                 }
               ]}
               onPress={() => setSelectedVibe(vibe.id)}
             >
-              <Text style={styles.cardIcon}>{vibe.icon}</Text>
-              <Text style={[styles.cardLabel, { color: selectedVibe === vibe.id ? '#fff' : activeTheme.textSecondary }]}>
+              <ImageBackground
+                source={vibeImages[vibe.id]}
+                style={StyleSheet.absoluteFill}
+                resizeMode="cover"
+              />
+              <View style={[
+                styles.cardOverlay,
+                { backgroundColor: selectedVibe === vibe.id ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.45)' }
+              ]} />
+              <Text style={styles.cardLabel}>
                 {vibe.label}
               </Text>
             </TouchableOpacity>
@@ -63,13 +82,16 @@ export default function VibeScreen() {
         {selectedVibe && (
           <View style={styles.readyContainer}>
             <Text style={[styles.readyText, { color: activeTheme.primary }]}>
-              Your journal is ready 💕{'\n'}Let's fill these pages with your little moments.
+              Your journal is ready{'\n'}Let's fill these pages with your little moments.
             </Text>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: activeTheme.primary }]}
               onPress={handleFinish}
             >
-              <Text style={styles.buttonText}>Enter my journal 🌸</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={styles.buttonText}>Enter my journal</Text>
+                <Ionicons name="enter-outline" size={20} color="#fff" />
+              </View>
             </TouchableOpacity>
           </View>
         )}
@@ -88,8 +110,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 28,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 24,
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -98,25 +120,38 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 15,
+    width: '100%',
   },
   card: {
     width: '45%',
-    padding: 20,
+    height: 120,
     borderRadius: 24,
     alignItems: 'center',
-    borderWidth: 2,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
-  cardIcon: {
-    fontSize: 36,
-    marginBottom: 10,
+  cardOverlay: {
+    ...StyleSheet.absoluteFill,
+    zIndex: 1,
   },
   cardLabel: {
     fontFamily: 'Quicksand_700Bold',
-    fontSize: 14,
+    fontSize: 16,
+    color: '#fff',
     textAlign: 'center',
+    zIndex: 2,
+    paddingHorizontal: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.6)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   readyContainer: {
-    marginTop: 50,
+    marginTop: 40,
     alignItems: 'center',
   },
   readyText: {

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useUser } from '@/context/UserContext';
 import { format } from 'date-fns';
 import MoodIcon from '@/components/mood-icon';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const { name, todayMood, entries, theme } = useUser();
@@ -28,7 +29,7 @@ export default function HomeScreen() {
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
         <Text style={[styles.date, { color: theme.textSecondary }]}>{currentDate}</Text>
-        <Text style={[styles.greeting, { color: theme.text }]}>{greetingTime}, {name} 🌙</Text>
+        <Text style={[styles.greeting, { color: theme.text }]}>{greetingTime}, {name}</Text>
       </View>
 
       <View style={styles.content}>
@@ -44,7 +45,7 @@ export default function HomeScreen() {
           <TouchableOpacity style={[styles.card, { backgroundColor: theme.backgroundElement, flex: 1, marginLeft: 10 }]}>
             <Text style={[styles.cardTitle, { color: theme.textSecondary }]}>Journal streak</Text>
             <View style={styles.moodContent}>
-              <Text style={styles.streakIcon}>🌱</Text>
+              <Ionicons name="leaf" size={32} color={theme.success} style={{ marginBottom: 5 }} />
               <Text style={[styles.streakText, { color: theme.success }]}>{streak} days blooming</Text>
             </View>
           </TouchableOpacity>
@@ -60,7 +61,7 @@ export default function HomeScreen() {
           {entries.length === 0 ? (
             <View style={[styles.emptyState, { backgroundColor: theme.backgroundElement }]}>
               <Text style={[styles.emptyStateText, { color: theme.textSecondary }]}>
-                No entries yet. Write your first thought! 🌸
+                No entries yet. Write your first thought!
               </Text>
             </View>
           ) : (
@@ -95,8 +96,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   greeting: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 32,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 28,
   },
   content: {
     padding: 20,
@@ -129,10 +130,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand_700Bold',
     fontSize: 16,
   },
-  streakIcon: {
-    fontSize: 36,
-    marginBottom: 5,
-  },
   streakText: {
     fontFamily: 'Quicksand_700Bold',
     fontSize: 16,
@@ -151,10 +148,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   quoteText: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 24,
+    fontFamily: 'Quicksand_500Medium',
+    fontStyle: 'italic',
+    fontSize: 20,
     color: '#fff',
-    lineHeight: 32,
+    lineHeight: 28,
   },
   section: {
     marginBottom: 20,

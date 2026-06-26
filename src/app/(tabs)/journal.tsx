@@ -12,7 +12,7 @@ export default function JournalScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>My Journal 📖</Text>
+        <Text style={[styles.title, { color: theme.text }]}>My Journal</Text>
       </View>
 
       <FlatList
@@ -22,7 +22,7 @@ export default function JournalScreen() {
         ListEmptyComponent={
           <View style={[styles.emptyState, { backgroundColor: theme.backgroundElement }]}>
             <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
-              Your pages are empty. {'\n'}Start writing your story 🌸
+              Your pages are empty. {'\n'}Start writing your story
             </Text>
           </View>
         }
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 36,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 32,
   },
   list: {
     padding: 20,

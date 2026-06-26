@@ -4,6 +4,7 @@ import { Themes, ThemeColors, VibeType } from '@/constants/theme';
 
 export type Mood = 'happy' | 'good' | 'calm' | 'emotional' | 'loved' | 'sad' | 'crying';
 export type Vibe = VibeType;
+export type Gender = 'male' | 'female';
 
 export interface JournalEntry {
   id: string;
@@ -21,6 +22,7 @@ interface UserState {
   isOnboardingComplete: boolean;
   name: string;
   age: string;
+  gender: Gender | null;
   vibe: Vibe | null;
   entries: JournalEntry[];
   todayMood: Mood | null;
@@ -29,7 +31,7 @@ interface UserState {
 }
 
 interface UserContextType extends UserState {
-  completeOnboarding: (data: { name: string; age: string; vibe: Vibe }) => Promise<void>;
+  completeOnboarding: (data: { name: string; age: string; vibe: Vibe; gender: Gender }) => Promise<void>;
   addEntry: (entry: JournalEntry) => Promise<void>;
   setTodayMood: (mood: Mood) => Promise<void>;
   setVibe: (vibe: Vibe) => Promise<void>;
@@ -43,6 +45,7 @@ const defaultState: UserState = {
   isOnboardingComplete: false,
   name: '',
   age: '',
+  gender: null,
   vibe: null,
   entries: [],
   todayMood: null,
@@ -52,7 +55,7 @@ const defaultState: UserState = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const STORAGE_KEY = '@bloom_user_data_v2';
+const STORAGE_KEY = '@bloom_user_data_v3';
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<UserState>(defaultState);
@@ -83,7 +86,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const completeOnboarding = async (data: { name: string; age: string; vibe: Vibe }) => {
+  const completeOnboarding = async (data: { name: string; age: string; vibe: Vibe; gender: Gender }) => {
     const newState = {
       ...state,
       ...data,

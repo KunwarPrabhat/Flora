@@ -24,7 +24,7 @@ export default function AgeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
-        <Text style={[styles.title, { color: theme.text }]}>One more tiny thing 🌙</Text>
+        <Text style={[styles.title, { color: theme.text }]}>One more tiny thing</Text>
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           How many candles are on your birthday cake?
         </Text>
@@ -42,7 +42,7 @@ export default function AgeScreen() {
 
         {age.trim().length > 0 && (
           <Text style={[styles.greeting, { color: theme.primary }]}>
-            Perfect 💗{'\n'}I'll make this little journal feel just right for you.
+            Perfect{'\n'}I'll make this little journal feel just right for you.
           </Text>
         )}
       </View>
@@ -56,7 +56,7 @@ export default function AgeScreen() {
         disabled={!age.trim()}
       >
         <Text style={[styles.buttonText, { color: age.trim() ? '#fff' : theme.textSecondary }]}>
-          Next ✨
+          Next
         </Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 32,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 28,
     textAlign: 'center',
     marginBottom: 20,
   },

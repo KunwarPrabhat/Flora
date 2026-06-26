@@ -15,7 +15,7 @@ export default function NameScreen() {
     if (name.trim()) {
       // Temporarily store name until onboarding is fully complete
       await AsyncStorage.setItem('@temp_name', name.trim());
-      router.push('/onboarding/age');
+      router.push('/onboarding/gender');
     }
   };
 
@@ -26,7 +26,7 @@ export default function NameScreen() {
     >
       <View style={styles.content}>
         <Text style={[styles.title, { color: theme.text }]}>Before we begin...</Text>
-        <Text style={[styles.title, { color: theme.text }]}>what should I call you? 💕</Text>
+        <Text style={[styles.title, { color: theme.text }]}>what should I call you?</Text>
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           Every beautiful story needs a name.
         </Text>
@@ -42,7 +42,7 @@ export default function NameScreen() {
 
         {name.trim().length > 0 && (
           <Text style={[styles.greeting, { color: theme.primary }]}>
-            Nice to meet you, {name}! 🌷{'\n'}I'm so happy you're here.
+            Nice to meet you, {name}!{'\n'}I'm so happy you're here.
           </Text>
         )}
       </View>
@@ -56,7 +56,7 @@ export default function NameScreen() {
         disabled={!name.trim()}
       >
         <Text style={[styles.buttonText, { color: name.trim() ? '#fff' : theme.textSecondary }]}>
-          Next ✨
+          Next
         </Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: 'DancingScript_700Bold',
-    fontSize: 32,
+    fontFamily: 'Quicksand_700Bold',
+    fontSize: 28,
     textAlign: 'center',
     marginBottom: 10,
   },
